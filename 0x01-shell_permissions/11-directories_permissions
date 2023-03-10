@@ -1,2 +1,2 @@
 #!/bin/bash
-chmod -R ugo+x .
+xargs -0 chmod a+x
