@@ -1,2 +1,2 @@
 #!/bin/bash
-xargs -0 chmod a+x
+chmod x+x */
