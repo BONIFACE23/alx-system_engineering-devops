@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+OSI model is a conceptual model that standardizes the functions of a telecommunication or network system into seven distinct layers. Each layer has its specific functions and interacts with the adjacent layers to facilitate communication between different devices and systems in a network.
+layers, from the lowest to the highest level, are:
+P
+D
+N
+T
+S
+P
+A
