@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run the script as root to display PIDs."
+  exit 1
+fi
+
+# Get the listening ports with associated PIDs and process names
+listening_ports=$(netstat -tlnp 2>/dev/null | awk '/^tcp/ || /^udp/ {print $4, $7}')
+
+# Display the output in a formatted way
+echo "Listening Ports:"
+echo "-----------------"
+echo "PORT    PID/Program name"
+
+while read -r line; do
+  port=$(echo "$line" | awk '{split($1, a, ":"); print a[length(a)]}')
+  pid_program=$(echo "$line" | awk '{split($2, a, "/"); printf "%s\t%s\n", a[1], a[2]}')
+
+  echo "$port    $pid_program"
+done <<< "$listening_ports"
