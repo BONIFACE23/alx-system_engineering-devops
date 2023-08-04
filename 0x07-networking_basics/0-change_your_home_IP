@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Check if the script is run as root
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run this script as root."
+    exit 1
+fi
+
+# Define the IP address mappings
+localhost_ip="127.0.0.2"
+facebook_ip="8.8.8.8"
+
+# Add the mappings to /etc/hosts
+echo -e "$localhost_ip\tlocalhost" >> /etc/hosts
+echo -e "$facebook_ip\tfacebook.com" >> /etc/hosts
+
+echo "Configuration completed."
