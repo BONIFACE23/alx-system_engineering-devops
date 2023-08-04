@@ -1,21 +1,25 @@
 #!/usr/bin/env bash
 
+# Bash script to display listening ports:
+# - Shows only listening sockets
+# - Shows the PID and name of the program to which each socket belongs
+
+# Check if the script is run with root privileges
 if [ "$EUID" -ne 0 ]; then
-  echo "Please run the script as root to display PIDs."
+  echo "Please run the script as root (or using sudo)."
   exit 1
 fi
 
-# Get the listening ports with associated PIDs and process names
-listening_ports=$(netstat -tlnp 2>/dev/null | awk '/^tcp/ || /^udp/ {print $4, $7}')
+# Get listening ports using netstat, filter only listening sockets, and extract PID and port number using awk
+listening_ports=$(netstat -tlnp | grep 'LISTEN' | awk '{print $4,$7}')
 
-# Display the output in a formatted way
-echo "Listening Ports:"
-echo "-----------------"
-echo "PORT    PID/Program name"
-
+# Loop through the list of listening ports and display PID, program name, and port number
+echo "PID   Program Name   Port"
+echo "-------------------------"
 while read -r line; do
-  port=$(echo "$line" | awk '{split($1, a, ":"); print a[length(a)]}')
-  pid_program=$(echo "$line" | awk '{split($2, a, "/"); printf "%s\t%s\n", a[1], a[2]}')
+  pid=$(echo "$line" | awk '{split($2,a,"/"); print a[1]}')
+  port=$(echo "$line" | awk '{split($1,a,":"); print a[length(a)]}')
+  program_name=$(lsof -i ":$port" | awk 'NR==2 {print $1}')
 
-  echo "$port    $pid_program"
+  echo "$pid    $program_name   $port"
 done <<< "$listening_ports"
